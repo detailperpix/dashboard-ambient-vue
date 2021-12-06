@@ -1,0 +1,101 @@
+<template>
+    <div>
+        <canvas id="dataChart" height="500" width="1200"></canvas>
+    </div>
+</template>
+
+<script>
+import Chart from 'chart.js/auto';
+import 'chartjs-adapter-moment';
+const data = {
+    labels: [],
+    datasets: [
+        {
+            label: `Ambient data`,
+            backgroundColor: 'navy',
+            borderColor: 'darkcyan',
+            data: [],
+        },
+    ],
+};
+const config = {
+    type: 'line',
+    data: data,
+    options: {
+        scales: {
+            xAxes: {
+                display: true,
+                type: 'time',
+                time: {
+                    parser: 'YYYY-MM-DDTHH:mm:ss.SSSZ',
+                    unit: 'second',
+                    unitStepSize: 5,
+                },
+            },
+        },
+        tooltip: {
+            enabled: true,
+        },
+    },
+};
+export default {
+    name: 'Chart',
+    data: () => ({
+        chart: null,
+        data: data,
+        config: config,
+    }),
+    mounted() {
+        this.chart = new Chart(document.getElementById('dataChart'), config);
+    },
+    methods: {
+        test: function (message, field) {
+            const parsedMessage = JSON.parse(message);
+            this.data.labels = [];
+            if (field == 'both') {
+                this.data.datasets = [
+                    {
+                        label: 'humidity',
+                        backgroundColor: 'navy',
+                        borderColor: 'lightblue',
+                        data: [],
+                    },
+                    {
+                        label: 'temperature',
+                        backgroundColor: 'red',
+                        borderColor: 'pink',
+                        data: [],
+                    },
+                ];
+            } else {
+                this.data.datasets = [
+                    {
+                        label: field,
+                        backgroundColor: 'navy',
+                        borderColor: 'lightblue',
+                        data: [],
+                    },
+                ];
+            }
+            parsedMessage.forEach((data) => {
+                this.data.labels.push(data.time);
+                if (data.field) {
+
+                    this.data.datasets.forEach((dataset) => {
+                        if (dataset.label == data.field) {
+                            dataset.data.push(data.value);
+                        }
+                    });
+                } else {
+                    this.data.datasets.forEach((dataset) => {
+                        dataset.data.push(data.value);
+                    });
+                }
+            });
+            this.chart.update();
+        },
+    },
+};
+</script>
+
+<style></style>
