@@ -1,6 +1,9 @@
 <template>
     <v-container>
         <v-row>
+        <v-col>
+
+        </v-col>
             <v-col>
                 <v-btn @click="incCount">Click me to increment by 1</v-btn>
             </v-col>

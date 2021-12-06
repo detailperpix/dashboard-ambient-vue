@@ -11,9 +11,26 @@ export default new Vuex.Store({
     state: {
         ...defaultState,
         users: undefined,
+        ambientdata: [],
+        ambientdatalabel: [],
     },
     modules: {},
-    getters,
+    getters: {
+        getAmbientData: (state) => {
+            return state.ambientdata;
+        },
+        getAmbientDataLabel: (state) => {
+            return state.ambientdatalabel;
+        }
+    },
     actions,
-    mutations,
+    mutations: {
+        addData: (state, payload) => {
+            state.ambientdata.push(payload.data);
+            state.ambientdatalabel.push(payload.label);
+        },
+        replaceData: (state, payload) => {
+            state.ambientdata = payload;
+        }
+    },
 });
