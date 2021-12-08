@@ -20,7 +20,8 @@
                     width="100"
                 />
             </div>
-
+            <v-spacer></v-spacer>
+            <h1>Ambient Data Dashboard</h1>
             <v-spacer></v-spacer>
 
             <v-btn href="https://github.com/vuetifyjs/vuetify/releases/latest" target="_blank" text>

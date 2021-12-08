@@ -50,35 +50,27 @@ export default {
         this.chart = new Chart(document.getElementById('dataChart'), config);
     },
     methods: {
-        updateChart: function (message, field) {
+        updateChart(message, field) {
             console.log('Rendering chart');
             const parsedMessage = JSON.parse(message);
             this.data.labels = [];
-            if (field == 'both') {
-                this.data.datasets = [
-                    {
-                        label: 'humidity',
-                        backgroundColor: 'navy',
-                        borderColor: 'lightblue',
-                        data: [],
-                    },
-                    {
-                        label: 'temperature',
-                        backgroundColor: 'red',
-                        borderColor: 'pink',
-                        data: [],
-                    },
-                ];
-            } else {
-                this.data.datasets = [
-                    {
-                        label: field,
-                        backgroundColor: 'navy',
-                        borderColor: 'lightblue',
-                        data: [],
-                    },
-                ];
-            }
+            this.data.datasets = [
+                {
+                    label: 'humidity',
+                    backgroundColor: 'navy',
+                    borderColor: 'lightblue',
+                    data: [],
+                    hidden: false,
+                },
+                {
+                    label: 'temperature',
+                    backgroundColor: 'red',
+                    borderColor: 'pink',
+                    data: [],
+                    hidden: false,
+                },
+            ];
+
             parsedMessage.forEach((data) => {
                 this.data.labels.push(data.time);
                 if (data.field) {
@@ -92,6 +84,13 @@ export default {
                         dataset.data.push(data.value);
                     });
                 }
+            });
+            // this.chart.update();
+            this.updateField(field);
+        },
+        updateField(field) {
+            this.data.datasets.forEach((dataset) => {
+                dataset.hidden = dataset.label != field && field != 'both';
             });
             this.chart.update();
         },
