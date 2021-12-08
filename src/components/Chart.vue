@@ -22,6 +22,7 @@ const config = {
     type: 'line',
     data: data,
     options: {
+        animation: false,
         scales: {
             xAxes: {
                 display: true,
@@ -49,7 +50,8 @@ export default {
         this.chart = new Chart(document.getElementById('dataChart'), config);
     },
     methods: {
-        test: function (message, field) {
+        updateChart: function (message, field) {
+            console.log('Rendering chart');
             const parsedMessage = JSON.parse(message);
             this.data.labels = [];
             if (field == 'both') {
@@ -80,7 +82,6 @@ export default {
             parsedMessage.forEach((data) => {
                 this.data.labels.push(data.time);
                 if (data.field) {
-
                     this.data.datasets.forEach((dataset) => {
                         if (dataset.label == data.field) {
                             dataset.data.push(data.value);
