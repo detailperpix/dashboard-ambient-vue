@@ -64,8 +64,7 @@
                     </v-select>
                 </v-col>
                 <v-col align-self="center">
-                    <input type="checkbox" id="checkbox" v-model="realtime" />
-                    <label for="checkbox">Real time data</label>
+                    <v-checkbox v-model="realtime" label="Real time data"> </v-checkbox>
                 </v-col>
                 <v-col cols="1">
                     <v-btn rounded block dark large v-on:click="queryData">Query</v-btn>
