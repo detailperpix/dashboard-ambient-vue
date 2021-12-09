@@ -1,10 +1,12 @@
 <template>
-    <div class="about">
-        <v-container>
-            <v-row justify="center">
-                <h1 style="align-center">Ambient Chart</h1>
+    <div class="ambient">
+        <v-toolbar dark>
+            <v-row>
+                <h1>Ambient Data Chart</h1>
             </v-row>
-
+        </v-toolbar>
+        <v-spacer> </v-spacer>
+        <v-container style="margin: 1em auto">
             <v-row>
                 <v-col>
                     <v-row>
