@@ -239,8 +239,8 @@ export default {
             date.setTime(data.timestamp);
 
             this.$set(this.deviceLatestTime, deviceId, date.toString());
-            this.$set(this.deviceLatestHumidity, deviceId, data.humidity);
-            this.$set(this.deviceLatestTemp, deviceId, data.temperature);
+            this.$set(this.deviceLatestHumidity, deviceId, data.humidity.toFixed(1));
+            this.$set(this.deviceLatestTemp, deviceId, data.temperature.toFixed(1));
         },
     },
 };
