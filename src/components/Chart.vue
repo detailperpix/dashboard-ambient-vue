@@ -33,6 +33,24 @@ const config = {
                     unitStepSize: 5,
                 },
             },
+            humidity: {
+                type: 'linear',
+                position: 'left',
+                title: {
+                    display: true,
+                    text: 'humidity',
+                    color: 'navy',
+                },
+            },
+            temperature: {
+                type: 'linear',
+                position: 'left',
+                title: {
+                    display: true,
+                    text: 'temperature',
+                    color: 'red',
+                },
+            },
         },
         tooltip: {
             enabled: true,
@@ -57,6 +75,7 @@ export default {
             this.data.datasets = [
                 {
                     label: 'humidity',
+                    yAxisID: 'humidity',
                     backgroundColor: 'navy',
                     borderColor: 'lightblue',
                     data: [],
@@ -64,6 +83,7 @@ export default {
                 },
                 {
                     label: 'temperature',
+                    yAxisID: 'temperature',
                     backgroundColor: 'red',
                     borderColor: 'pink',
                     data: [],
