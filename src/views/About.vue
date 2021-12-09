@@ -11,7 +11,7 @@
                         <v-select
                             v-model="selectedDevice"
                             :items="deviceId"
-                            label="select device"
+                            label="Device"
                             item-text="deviceName"
                             item-value="value"
                             return-object
@@ -22,7 +22,7 @@
                         <v-select
                             v-model="selectedField"
                             :items="fields"
-                            label="select field"
+                            label="Field"
                             @change="changeField"
                         >
                         </v-select
@@ -35,7 +35,7 @@
                             :disabled="realtime"
                             v-model="timeStart"
                             type="datetime-local"
-                            label="time start"
+                            label="Time start"
                             @change="timeStartUpdateRange"
                         >
                         </v-text-field>
@@ -43,7 +43,7 @@
                             :disabled="realtime"
                             v-model="timeStop"
                             type="datetime-local"
-                            label="time stop"
+                            label="Time stop"
                             @change="timeStopUpdateRange"
                         >
                         </v-text-field>
@@ -53,7 +53,7 @@
                     <v-select
                         v-model="timeRange"
                         :items="timeRangeOptions"
-                        label="time range(minutes)"
+                        label="Time range"
                         item-text="desc"
                         item-value="value"
                         @change="timeStartUpdateRange"
@@ -73,26 +73,44 @@
                 <Chart ref="dataChart" />
             </v-col>
             <v-row style="margin: 1em auto 0 auto">
-                <h2>Dummy device latest update:</h2>
+                <h2>Status:</h2>
             </v-row>
-            <div style="padding: 1em 1em">
-                <br />
-                <v-row>
-                    <p>
-                        dummy-device-1: <em> {{ this.deviceLatestTime[0] }} </em>
-                    </p>
-                </v-row>
-                <v-row>
-                    <p>
-                        dummy-device-2: <em> {{ this.deviceLatestTime[1] }} </em>
-                    </p>
-                </v-row>
-                <v-row>
-                    <p>
-                        dummy-device-3: <em> {{ this.deviceLatestTime[2] }} </em>
-                    </p>
-                </v-row>
-            </div>
+            <v-col>
+                <v-card>
+                    <v-card-title> dummy-device-1 </v-card-title>
+                    <v-card-text>
+                        <ul style="list-style-type: none">
+                            <li><strong> Last updated: </strong>{{ this.deviceLatestTime[0] }}</li>
+                            <li><strong> Temperature: </strong>{{ this.deviceLatestTemp[0] }}</li>
+                            <li><strong> Humidity: </strong>{{ this.deviceLatestHumidity[0] }}</li>
+                        </ul>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+            <v-col>
+                <v-card>
+                    <v-card-title> dummy-device-2 </v-card-title>
+                    <v-card-text>
+                        <ul style="list-style-type: none">
+                            <li><strong> Last updated: </strong>{{ this.deviceLatestTime[1] }}</li>
+                            <li><strong> Temperature: </strong>{{ this.deviceLatestTemp[1] }}</li>
+                            <li><strong> Humidity: </strong>{{ this.deviceLatestHumidity[1] }}</li>
+                        </ul>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+            <v-col>
+                <v-card>
+                    <v-card-title> dummy-device-3 </v-card-title>
+                    <v-card-text>
+                        <ul style="list-style-type: none">
+                            <li><strong> Last updated: </strong>{{ this.deviceLatestTime[2] }}</li>
+                            <li><strong> Temperature: </strong>{{ this.deviceLatestTemp[2] }}</li>
+                            <li><strong> Humidity: </strong>{{ this.deviceLatestHumidity[2] }}</li>
+                        </ul>
+                    </v-card-text>
+                </v-card>
+            </v-col>
         </v-container>
     </div>
 </template>
@@ -119,6 +137,8 @@ export default {
         timeStop: '1970-01-01T00:00:00',
         realtime: false,
         deviceLatestTime: ['-', '-', '-'],
+        deviceLatestHumidity: ['-', '-', '-'],
+        deviceLatestTemp: ['-', '-', '-'],
         timeRange: { value: '1', desc: '1 minute' },
         timeRangeOptions: [
             { value: '1', desc: '1 minute' },
@@ -134,8 +154,9 @@ export default {
         console.log('Emitter on');
         ioInstance.on('newdata', (msg) => {
             console.log('Received newdata');
-            const msgId = Number(msg[msg.length - 1]);
-            this.$set(this.deviceLatestTime, msgId - 1, new Date().toString());
+            this.updateLatestDeviceData(msg);
+            const deviceId = msg.deviceId;
+            const msgId = Number(deviceId[deviceId.length - 1]);
             if (msgId == this.selectedDevice.value) {
                 this.queryData();
             }
@@ -155,7 +176,7 @@ export default {
             const options = {
                 hostname: 'localhost',
                 port: 8000,
-                path: `/ambient-device-${this.selectedDevice.value}/both/${rangeStart}/${rangeStop}`,  // !this.realtime ? rangeStop : ''
+                path: `/ambient-device-${this.selectedDevice.value}/both/${rangeStart}/${rangeStop}`, // !this.realtime ? rangeStop : ''
 
                 method: 'GET',
             };
@@ -209,6 +230,16 @@ export default {
         },
         changeField() {
             this.$refs.dataChart.updateField(this.selectedField);
+        },
+        updateLatestDeviceData(data) {
+            const msgId = data.deviceId;
+            const deviceId = Number(msgId[msgId.length - 1]) - 1;
+            const date = new Date();
+            date.setTime(data.timestamp);
+
+            this.$set(this.deviceLatestTime, deviceId, date.toString());
+            this.$set(this.deviceLatestHumidity, deviceId, data.humidity);
+            this.$set(this.deviceLatestTemp, deviceId, data.temperature);
         },
     },
 };
